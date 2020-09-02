@@ -33,6 +33,7 @@ struct Revival{
     int     event;
 };
 struct troll{
+    bool usedto;
     bool wing;
     int castle;
     int event;
@@ -182,7 +183,7 @@ void passcastle(knight& theKnight, bool& opponent, int& MaxHP ){
 //Cau d) Dieu kien chien THANG quai vat tu 1-5
 
 
-bool opponent1_5(knight& theKnight,int eventcode, int eventorder, int& MaxHP, POISON& poison, int& antidote,fake_armor& fakearmor, bool& normal,bool& Lancelot, bool& King, bool& Princess, bool& Exsword, Odin& odin, bool& Mythrill){
+bool opponent1_5(knight& theKnight,int eventcode, int eventorder, int& MaxHP, POISON& poison, int& antidote,fake_armor& fakearmor, bool& normal,bool& Lancelot, bool& King, bool& Princess, bool& Exsword, Odin& odin, bool& Mythrill, troll& Troll, int castle, int event){
     bool ketqua=false;
     int i=eventorder;
     int b=i%10;
@@ -191,10 +192,10 @@ bool opponent1_5(knight& theKnight,int eventcode, int eventorder, int& MaxHP, PO
 
     //!!!Knight sieu anh hung
     if(King && Exsword || Lancelot){//Thang
-        if(eventcode==1) theKnight.gil+=100;
-        if(eventcode==2) theKnight.gil+=150;
+        if(eventcode==1) if(theKnight.gil<=899) theKnight.gil+=100; else theKnight.gil=999;
+        if(eventcode==2) if(theKnight.gil<=849) theKnight.gil+=150; else theKnight.gil=999;
         if(eventcode==3){//Danh voi Elf
-            theKnight.gil+=450;
+            if(theKnight.gil<=549) theKnight.gil+=450; else theKnight.gil=999;
             antidote++;//THANG dc item antidote
             if(antidote && poison.active){//Neu co antidote va bi poison se giai doc
                 poison.active=false;
@@ -203,27 +204,32 @@ bool opponent1_5(knight& theKnight,int eventcode, int eventorder, int& MaxHP, PO
         }
         if(eventcode==4) theKnight.gil+=650;
         if(eventcode==5){//Thang troll bi trung loi nguyen
-            theKnight.gil+=850;
-            /*if(!antidote){// Không có antidote s? b? trúng l?i nguy?n
-                Troll.wing=true;
-                Troll.time=6;
-            }else antidote--;*/
+            if(theKnight.gil<=149) theKnight.gil+=850; else theKnight.gil=999;
+            if(Troll.usedto==false){
+                    if(!antidote){// Khong co antidote se bi trung loi nguyen
+                        Troll.usedto=true;
+                        Troll.wing=true;
+                        Troll.time=6;
+                        Troll.event=event;
+                        Troll.castle=castle;
+                    }else antidote--;
+                }
         }
 
         ketqua=true;
 
     }else   binhthuong=true;
 
-     //!!!Trường hợp King Arthur không có ki?m thì dánh nhu bình thu?ng thua v?n tr? v? giá tr? false nhung có nghia là hòa
+     //!!!Trường hợp King Arthur không có kiem thì dánh nhu bình thuong thua van tra ve gia tri false nhung có nghia là hòa
     //!!!!Knight binh thuong
     if(binhthuong){
         //Neu co Odin thi thang
         if(odin.active){
 
-            if(eventcode==1) theKnight.gil+=100;
-            if(eventcode==2) theKnight.gil+=150;
+            if(eventcode==1) if(theKnight.gil<=899) theKnight.gil+=100; else theKnight.gil=999;
+            if(eventcode==2) if(theKnight.gil<=849) theKnight.gil+=150; else theKnight.gil=999;
             if(eventcode==3){//Danh voi Elf
-                theKnight.gil+=450;
+                if(theKnight.gil<=549) theKnight.gil+=450; else theKnight.gil=999;
                 antidote++;//THANG dc item antidote
                 if(antidote && poison.active){//Neu co antidote va bi poison se giai doc
                     poison.active=false;
@@ -231,12 +237,17 @@ bool opponent1_5(knight& theKnight,int eventcode, int eventorder, int& MaxHP, PO
                 }
             }
             if(eventcode==4) theKnight.gil+=650;
-            if(eventcode==5){//Th?ng Troll b? trúng l?i nguy?n
-                theKnight.gil+=850;
-                /*if(!antidote){// Không có antidote s? b? trúng l?i nguy?n
-                    Troll.wing=true;
-                    Troll.time=6;
-                }else antidote--;*/
+            if(eventcode==5){//Thang troll bi trung loi nguyen
+                if(theKnight.gil<=149) theKnight.gil+=850; else theKnight.gil=999;
+                if(Troll.usedto==false){
+                        if(!antidote){// Khong co antidote se bi trung loi nguyen
+                            Troll.usedto=true;
+                            Troll.wing=true;
+                            Troll.time=6;
+                            Troll.event=event;
+                            Troll.castle=castle;
+                        }else antidote--;
+                    }
             }
 
             ketqua=true;
@@ -245,7 +256,7 @@ bool opponent1_5(knight& theKnight,int eventcode, int eventorder, int& MaxHP, PO
         //Neu co fake Odin thi thua
         if(odin.clactive){
             if(!King){//King khong thua
-                if(!Mythrill){//Có Mythrill không b? m?t máu
+                if(!Mythrill){//Có Mythrill không bi mat mau
                     if(eventcode==1) theKnight.HP-=1*levelO*10;
                     if(eventcode==2){
                         if(!Princess){
@@ -289,10 +300,10 @@ bool opponent1_5(knight& theKnight,int eventcode, int eventorder, int& MaxHP, PO
             if(!fakearmor.active){
                 if( theKnight.level>= levelO){//Neu THANG duoc thuong tien
 
-                if(eventcode==1) theKnight.gil+=100;
-                if(eventcode==2) theKnight.gil+=150;
+                if(eventcode==1) if(theKnight.gil<=899) theKnight.gil+=100; else theKnight.gil=999;
+                if(eventcode==2) if(theKnight.gil<=849) theKnight.gil+=150; else theKnight.gil=999;
                 if(eventcode==3){//Danh voi Elf
-                    theKnight.gil+=450;
+                    if(theKnight.gil<=549) theKnight.gil+=450; else theKnight.gil=999;
                     antidote++;//THANG dc item antidote
                     if(antidote && poison.active){//Neu co antidote va bi poison se giai doc
                         poison.active=false;
@@ -300,18 +311,23 @@ bool opponent1_5(knight& theKnight,int eventcode, int eventorder, int& MaxHP, PO
                     }
                 }
                 if(eventcode==4) theKnight.gil+=650;
-                if(eventcode==5){//Th?ng Troll b? trúng l?i nguy?n
-                    theKnight.gil+=850;
-                    /*if(!antidote){// Không có antidote s? b? trúng l?i nguy?n
-                        Troll.wing=true;
-                        Troll.time=6;
-                    }else antidote--;*/
+                if(eventcode==5){//Thang troll bi trung loi nguyen
+                    if(theKnight.gil<=149) theKnight.gil+=850; else theKnight.gil=999;
+                    if(Troll.usedto==false){
+                            if(!antidote){// Khong co antidote se bi trung loi nguyen
+                                Troll.usedto=true;
+                                Troll.wing=true;
+                                Troll.time=6;
+                                Troll.event=event;
+                                Troll.castle=castle;
+                            }else antidote--;
+                        }
                 }
 
                 ketqua=true;
                 }else{//Neu lv thap hon thi thua
                     if(!King){//King khong thua
-                        if(!Mythrill){//Có Mythrill không b? m?t máu
+                        if(!Mythrill){//Co Mythrill khong mat mau
                             if(eventcode==1) theKnight.HP-=1*levelO*10;
                             if(eventcode==2){
                                 if(!Princess){
@@ -711,6 +727,12 @@ report*  walkthrough (knight& theKnight, castle arrCastle[], int nCastle, int mo
     Revival revivaldoor;
     revivaldoor.active=false;
 
+    troll Troll;
+    Troll.wing=false;
+    Troll.usedto=false;
+    Troll.time=0;
+
+
     int lose        =0;
     int win         =0;
     int disNina     =0;//So lan Nina khong duoc xuat hien lai
@@ -741,8 +763,8 @@ report*  walkthrough (knight& theKnight, castle arrCastle[], int nCastle, int mo
     if(Princess)  cout<<"Princess"<<endl;
     if(Paladin)  cout<<"Paladin"<<endl;
     if(Dragon)  cout<<"Dragon"<<endl;
-
-    for(int icastle=0 ;(nPetal>0 || King) && Ulti==false; icastle++ ){
+    int icastle=0;
+    for( ;(nPetal>0 || King) && Ulti==false; ){
 
         if(icastle==nCastle)
             icastle=0;
@@ -751,15 +773,17 @@ report*  walkthrough (knight& theKnight, castle arrCastle[], int nCastle, int mo
         bool opponent=false;
 
         //Chay cac event
-
-        for( int j=0;j<arrCastle[icastle].nEvent && (nPetal>0 || King) && Ulti==false; j++ ){
-            cout<<arrCastle[icastle].arrEvent[j]<<"    HP   "<<theKnight.HP<<"   gil   "<<theKnight.gil<<"   level  "<<theKnight.level<< "   petal   "<<nPetal<< "   win   "<<win<<"   lose   "<<lose<< endl;
+        int j;
+        if(Troll.wing==false)
+            j=0;
+        else    j=arrCastle[icastle].nEvent-1;
+        for( ; (nPetal>0 || King) && Ulti==false; ){
+            cout<<arrCastle[icastle].arrEvent[j]<<"    HP   "<<theKnight.HP<<"   gil   "<<theKnight.gil<<"   level  "<<theKnight.level<< "   petal   "<<nPetal<< "   win   "<<win<<"   lose   "<<lose<< "Castle     "<<icastle+1<<"   Event      "<<j+1<< endl;
 //---1-5----Cac quai tu 1 den 5
             if(arrCastle[icastle].arrEvent[j]==1 || arrCastle[icastle].arrEvent[j]==2 ||
             arrCastle[icastle].arrEvent[j]==3 ||arrCastle[icastle].arrEvent[j]==4 ||arrCastle[icastle].arrEvent[j]==5){
 
-                bool ketqua=opponent1_5(theKnight,arrCastle[icastle].arrEvent[j], j+1, MaxHP, poison, antidote, fakearmor, normal, Lancelot, King, Princess, Exsword, odin, Mythrillarmor);
-
+                bool ketqua=opponent1_5(theKnight,arrCastle[icastle].arrEvent[j], j+1, MaxHP, poison, antidote, fakearmor, normal, Lancelot, King, Princess, Exsword, odin, Mythrillarmor, Troll, icastle, j);
                 //Kiem tra thang thua
                 if(ketqua)
                     win++;
@@ -1033,11 +1057,35 @@ report*  walkthrough (knight& theKnight, castle arrCastle[], int nCastle, int mo
 
 
             //Dieu kien chuyen event
+            if(Troll.wing==false){
+                j++;
+                if(j>=arrCastle[icastle].nEvent)    break;//Chu y truong hop Locked Door
+            }else{
+                Troll.time--;
+                if(Troll.time==0){
+                    icastle=Troll.castle;
+                    j=Troll.event+1;
+                    Troll.wing =true;
+                }
+                if(icastle==0&&j==0){
+                    Troll.wing=false;
+                    icastle=Troll.castle;
+                    j=Troll.event+1;
+                    break;
+                }
+
+                j--;
+                if(j==-1)    break;
+            }
         }
 
         //Dieu kien chuyen castle
         if(!Ulti)
             passcastle(theKnight, opponent, MaxHP);
+
+        if(Troll.wing ==false)
+            icastle++;
+        else icastle--;
 
     }
 
